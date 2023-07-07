@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hotel Booking Registration</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Hotel Booking Registration</h1>
+  
+  <div class="form-container">
+    <form id="registrationForm">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="checkInDate">Check-in Date:</label>
+        <input type="date" id="checkInDate" name="checkInDate" required>
+      </div>
+
+      <div class="form-group">
+        <label for="totalDays">Total Number of Days:</label>
+        <input type="number" id="totalDays" name="totalDays" min="1" required>
+      </div>
+
+      <div class="form-group">
+        <label for="totalPersons">Total Number of Persons:</label>
+        <input type="number" id="totalPersons" name="totalPersons" min="1" required>
+      </div>
+
+      <div class="form-group">
+        <label for="roomType">Room Type:</label>
+        <select id="roomType" name="roomType" required>
+          <option value="delux">Delux</option>
+          <option value="suite">Suite</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Amenities:</label>
+        <div class="checkbox">
+          <img class="AC" src="AC.jpg" alt="AC">
+          <label><input type="checkbox" name="amenities" value="AC"> AC</label>
+        </div>
+        <div class="checkbox">
+          <img class="locker" src="lockers.jpg" alt="lockers">
+          <label class="box"><input type="checkbox" name="amenities" value="Locker"> Locker</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="advancePayment">Advance Payment:</label>
+        <input type="number" id="advancePayment" name="advancePayment" min="0" required>
+      </div>
+
+      <div class="form-group">
+        <label>Total Amount:</label>
+        <span id="totalAmount" class="amount"></span>
+      </div>
+
+      <div class="form-group">
+        <label>Room Cost:</label>
+        <span id="roomCost" class="amount"></span>
+      </div>
+
+      <div class="form-group">
+        <label>Amenities Cost:</label>
+        <span id="amenitiesCost" class="amount"></span>
+      </div>
+
+      <div class="form-group">
+        <label>Extra Persons Cost:</label>
+        <span id="extraPersonsCost" class="amount"></span>
+      </div>
+
+      <div class="form-group">
+        <label>Balance Amount:</label>
+        <span id="balanceAmount" class="amount"></span>
+      </div>
+
+      <div class="form-group button-container">
+        <button class="register" type="submit">Register</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('registrationForm');
+    form.addEventListener('submit', calculateCosts);
+
+    function calculateCosts(event) {
+      event.preventDefault();
+
+      const totalDays = parseInt(document.getElementById('totalDays').value);
+      const totalPersons = parseInt(document.getElementById('totalPersons').value);
+      const roomType = document.getElementById('roomType').value;
+      const amenities = Array.from(document.getElementsByName('amenities'))
+        .filter(input => input.checked)
+        .map(input => input.value);
+      const advancePayment = parseInt(document.getElementById('advancePayment').value);
+      const roomRate = getRoomRate(roomType);
+      const roomCost = roomRate * totalDays;
+
+      // Calculate total cost for amenities
+      const amenitiesRate = getAmenitiesRate(amenities);
+      const amenitiesCost = amenitiesRate * totalDays;
+
+      // Calculate extra persons cost
+      const extraPersonsCost = calculateExtraPersonsCost(totalPersons);
+
+      // Calculate balance amount
+      const totalAmount = roomCost + amenitiesCost + extraPersonsCost;
+      const balanceAmount = totalAmount - advancePayment;
+
+      document.getElementById('totalAmount').textContent = totalAmount;
+      document.getElementById('roomCost').textContent = roomCost;
+      document.getElementById('amenitiesCost').textContent = amenitiesCost;
+      document.getElementById('extraPersonsCost').textContent = extraPersonsCost;
+      document.getElementById('balanceAmount').textContent = balanceAmount;
+    }
+
+    function getRoomRate(roomType) {
+      switch (roomType) {
+        case 'delux':
+          return 2500;
+        case 'suite':
+          return 4000;
+        default:
+          return 0;
+      }
+    }
+
+    function getAmenitiesRate(amenities) {
+      let rate = 0;
+      for (const amenity of amenities) {
+        switch (amenity) {
+          case 'AC':
+            rate += 1000;
+            break;
+          case 'Locker':
+            rate += 300;
+            break;
+          default:
+            break;
+        }
+      }
+      return rate;
+    }
+
+    function calculateExtraPersonsCost(totalPersons) {
+      if (totalPersons <= 2) {
+        return 0;
+      } else {
+        const extraPersons = totalPersons - 2;
+        return extraPersons * 1000;
+      }
+    }
+  </script>
+</body>
+</html>
+
+body {
+    font-family: Arial, sans-serif;
+    background:linear-gradient(to top,rgba(0,0,0,0.5)50%,rgba(0,0,0,0.5)50%) ,url(registration-photo1.jpg);
+    background-size: cover;
+    margin: 0;
+    padding: 20px;
+  }
+
+  h1 {
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    color: #f2f2f2;
+  }
+
+  .form-container {
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .deluxx{
+    width: 180px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 3px black;
+  }
+
+  .suitee{
+    width: 180px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 3px black;
+  }
+
+  .form-group input[type="text"],
+  .form-group input[type="date"],
+  .form-group input[type="number"],
+  .form-group select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  .form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 40px;
+    background: url("arrow.png") no-repeat right center / 15px 15px;
+  }
+
+  .form-group .checkbox {
+    margin-top: 5px;
+    display: inline-block;
+  }
+
+  .AC{
+    width:180px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 3px black;
+  }
+
+  .locker{
+    width: 160px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 3px black;
+    margin-left: 60px;
+  }
+  
+  .box{
+    margin-left: 60px;
+  }
+
+  .form-group .checkbox label {
+    font-weight: normal;
+  }
+
+  .form-group .checkbox input {
+    margin-right: 5px;
+  }
+
+  .form-group .amount {
+    font-weight: bold;
+  }
+
+  .form-group .button-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .form-group .button-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .form-group .button-container button:hover {
+    background-color: #45a049;
+  }
+  
+  .register{
+    width:150px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 15px;
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .register:active{
+    background-color: green;
+  }
